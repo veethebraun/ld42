@@ -13,8 +13,16 @@ public:
     MineBuilding(int x, int y);
 
     void resourceGeneration(Resources* resources) override;
+    std::string getBitmapName() override {
+        return "mine";
+    };
+    void onDestroy(Resources *resources) override;
+    ~MineBuilding() override = default;
 protected:
     std::valarray<int> getCost() override;
+
+private:
+    int drop_counter = 0;
 };
 
 

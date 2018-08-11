@@ -13,13 +13,8 @@ std::valarray<int> MaterialStorage::getStorage() {
 }
 
 MaterialStorage::MaterialStorage(int x, int y) : Storage(x, y) {
-    std::vector<Vector2d<int>> locs;
+    locs.emplace_back(Point2d({0,0}));
+    requiredLocs.emplace_back(Point2d({0,0}));
 
-    Vector2d<int> loc;
-    loc.x = 0; loc.y = 0;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
-
-    setLocs(locs);
 
 }

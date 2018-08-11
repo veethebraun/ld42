@@ -13,6 +13,11 @@ public:
     SteelRefinery(int x, int y);
 
     void resourceGeneration(Resources* resources) override;
+    std::string getBitmapName() override {
+        return "steel_ref";
+    };
+    void onDestroy(Resources *resources) override;
+    ~SteelRefinery() override = default;
 protected:
     std::valarray<int> getCost() override;
 };

@@ -9,24 +9,20 @@ std::valarray<int> WindBuilding::getCost() {
 }
 
 WindBuilding::WindBuilding(int x, int y) : Building(x, y) {
-    std::vector<Vector2d<int>> locs;
 
-    Vector2d<int> loc;
-    loc.x = 0; loc.y = 0;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
-    loc.x = 0; loc.y = 1;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
-    loc.x = 1; loc.y = 0;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
-    loc.x = 1; loc.y = 1;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
-    loc.x = 0; loc.y = 2;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
+    locs.emplace_back(Point2d({0,0}));
+    requiredLocs.emplace_back(Point2d({0,0}));
+    locs.emplace_back(Point2d({0,1}));
+    requiredLocs.emplace_back(Point2d({0,1}));
+    locs.emplace_back(Point2d({1,0}));
+    requiredLocs.emplace_back(Point2d({1,0}));
+    locs.emplace_back(Point2d({1,1}));
+    requiredLocs.emplace_back(Point2d({1,1}));
+    locs.emplace_back(Point2d({0,2}));
+    requiredLocs.emplace_back(Point2d({0,2}));
+}
 
-    setLocs(locs);
+void WindBuilding::onDestroy(Resources *resources) {
+    destroyed = true;
+
 }

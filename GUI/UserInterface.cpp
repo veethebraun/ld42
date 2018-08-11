@@ -9,7 +9,9 @@
 #include <queue>
 
 void UserInterface::init() {
-    resourceManager = new ResourceManager("cfg/fonts.yaml", "cfg/bitmaps.yaml", "cfg/audio.yaml");
+    resourceManager = new ResourceManager(R"(C:\Users\vbrau\CLionProjects\ld42\cmake-build-debug\cfg\fonts2.yaml)",
+                                          R"(C:\Users\vbrau\CLionProjects\ld42\cmake-build-debug\cfg\bitmaps.yaml)",
+                                          R"(C:\Users\vbrau\CLionProjects\ld42\cmake-build-debug\cfg\audio.yaml)");
     audioManager = new AudioStuff();
     audioManager->init();
 
@@ -57,6 +59,17 @@ void UserInterface::run() {
         if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
             if (event.keyboard.keycode == ALLEGRO_KEY_Q) {
                 break;
+            }
+            if (event.keyboard.keycode == ALLEGRO_KEY_P) {
+                for (const auto &timer : timers) {
+                    if (timer != graphics_timer) {
+                        if (al_get_timer_started(timer->getTimer())) {
+                            al_stop_timer(timer->getTimer());
+                        } else {
+                            al_start_timer(timer->getTimer());
+                        }
+                    }
+                }
             }
             command_queue = current_scene->onKeyboardPress(event);
         }

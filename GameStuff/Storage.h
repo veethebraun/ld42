@@ -12,6 +12,7 @@ class Storage : public Building {
 public:
     Storage(int x, int y) : Building(x, y) {};
     void onBuild(Resources* resources) override;
+    void onDestroy(Resources *resources) override;
 
 protected:
     virtual std::valarray<int> getStorage() = 0;

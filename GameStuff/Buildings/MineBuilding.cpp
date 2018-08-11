@@ -5,7 +5,8 @@
 #include "MineBuilding.h"
 
 void MineBuilding::resourceGeneration(Resources *resources) {
-    resources->addResources({0,5,0,0,0});
+    if (!destroyed)
+        resources->addResources({0,5,0,0,0});
 }
 
 std::valarray<int> MineBuilding::getCost() {
@@ -13,27 +14,19 @@ std::valarray<int> MineBuilding::getCost() {
 }
 
 MineBuilding::MineBuilding(int x, int y) : Building(x, y) {
+    locs.emplace_back(Point2d({0,1}));
+    requiredLocs.emplace_back(Point2d({0,1}));
+    locs.emplace_back(Point2d({1,1}));
+    requiredLocs.emplace_back(Point2d({1,1}));
+    locs.emplace_back(Point2d({1,0}));
+    requiredLocs.emplace_back(Point2d({1,0}));
+    locs.emplace_back(Point2d({2,1}));
+    locs.emplace_back(Point2d({3,1}));
 
-    std::vector<Vector2d<int>> locs;
+    drop_counter = x - 2;
 
-    Vector2d<int> loc;
-    loc.x = -1; loc.y = 1;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
+}
 
-    loc.x = 0; loc.y = 1;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
-    loc.x = 0; loc.y = 0;
-    requiredLocs[loc] = true;
-    locs.push_back(loc);
-    loc.x = 1; loc.y = 1;
-    requiredLocs[loc] = false;
-    locs.push_back(loc);
-    loc.x = 2; loc.y = 1;
-    requiredLocs[loc] = false;
-    locs.push_back(loc);
-    setLocs(locs);
-
+void MineBuilding::onDestroy(Resources *resources) {
 }
 

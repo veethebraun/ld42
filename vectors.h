@@ -13,9 +13,11 @@ struct Vector2d {
 
 };
 
-template<typename T>
-bool operator <(const Vector2d<T>& lhs, const Vector2d<T>& rhs) {
-    return std::tie(lhs.x, lhs.y) < std::tie(rhs.x, rhs.y);
-}
+typedef std::array<int, 2> Point2d;
+
+//template<typename T>
+//bool operator <(const Vector2d<T>& lhs, const Vector2d<T>& rhs) {
+//    return std::tie(lhs.x, lhs.y) < std::tie(rhs.x, rhs.y);
+//}
 
 #endif //LD42_VECTORS_H

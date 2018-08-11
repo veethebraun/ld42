@@ -14,10 +14,9 @@
 #include "vectors.h"
 #include "GameStuff/Resources.h"
 #include "GameStuff/BuildingFactory.h"
+#include "defs.h"
 
-#define GRID_ROWS 5
-#define GRID_COLS 7
-
+#define NUM_TIME_STEPS_FOR_DROP 6
 
 class Game {
 public:
@@ -27,15 +26,23 @@ public:
     SceneList getCurrentScene() const;
 
     void init();
-    const std::map<Building *, Vector2d<int>> &getBuildingToGrid() const;
 
     Resources *getResource() const;
+    const char * getMessage() const;
+
+    void setMessage(const char *message);
+
+    BuildingType getCurrentBuildingSelection() const;
 
 private:
     SceneList current_scene = SceneList::NONE;
-    std::array<std::array<Building*,GRID_COLS>,GRID_ROWS> buildings = {{{nullptr}}};
+    std::array<std::array<bool,GRID_COLS>,GRID_ROWS> buildings = {{{false}}};
 
-    std::map<Building*,Vector2d<int>> buildingToGrid;
+    std::vector<Building*> activeBuildings;
+public:
+    const std::vector<Building *> &getActiveBuildings() const;
+
+private:
 
     void placeBuilding(int x, int y);
     bool hasBuilding(int x, int y);
@@ -51,16 +58,17 @@ private:
 
     BuildingType currentBuildingSelection = BuildingType::NONE;
 
-    std::string message = "";
+    const char* message = "";
 
     bool buildingsFree = false;
-public:
-    const std::string &getMessage() const;
 
-    void setMessage(const std::string &message);
+    void dropBuildings();
 
-public:
-    BuildingType getCurrentBuildingSelection() const;
+    void populateBuilding(Building *building);
+
+    int dropCounter = 0;
+
+    void fillBuildings();
 };
 
 

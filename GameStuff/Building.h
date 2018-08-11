@@ -10,6 +10,7 @@
 #include <vector>
 #include "Resources.h"
 #include "../vectors.h"
+#include "../defs.h"
 #include <map>
 
 class Building {
@@ -30,23 +31,35 @@ public:
 
     bool canBuild(Resources *resources);
 
-    //virtual void onDestroy(Resources *resources) = 0;
-    //virtual void onDelete(Resources *resources) = 0;
+
+    bool isLocRequired(Point2d loc);
+
+    virtual std::string getBitmapName() = 0;
+
+    void dropLevel(Resources *resources);
+    virtual void onDestroy(Resources *resources) = 0;
+
+    Point2d getXY();
+
+    bool isOnBoard(int max_x, int max_y);
+
+    virtual ~Building() = default;
+
 protected:
     virtual std::valarray<int> getCost() = 0;
-    std::map<Vector2d<int>, bool> requiredLocs;
+
+    std::vector<Point2d> requiredLocs;
+
+    bool destroyed = false;
+    std::vector<Point2d> locs;
+public:
+    const std::vector<Point2d> &getLocs() const;
 
 private:
     int x;
     int y;
 
-    std::vector<Vector2d<int>> locs;
-public:
-    void setLocs(const std::vector<Vector2d<int>> &locs);
 
-public:
-    const std::vector<Vector2d<int>> &getLocs() const;
-    bool isLocRequired(Vector2d<int> loc);
 };
 
 

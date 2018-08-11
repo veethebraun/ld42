@@ -12,7 +12,7 @@
 
 class FontManager {
 public:
-    explicit FontManager(std::string filename);
+    explicit FontManager(const char *filename);
     ALLEGRO_FONT* get(const char* key);
 
     virtual ~FontManager();

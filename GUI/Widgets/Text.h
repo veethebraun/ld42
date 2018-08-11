@@ -16,7 +16,6 @@ public:
     void draw() override;
 
     const std::string &getText() const;
-    void setText(const std::string &text);
     void setColor(const ALLEGRO_COLOR &color);
 
 private:

@@ -9,3 +9,21 @@ tower_tile_bg:
 
 base_tile:
   file: imgs/base_tile.png
+
+fuel_ref:
+  file: imgs/red.png
+
+fuel_store:
+  file: imgs/teal.png
+
+mat_store:
+  file: imgs/yellow.png
+
+mine:
+  file: imgs/orange.png
+
+steel_ref:
+  file: imgs/base_tile.png
+
+wind_power:
+  file: imgs/purple.png

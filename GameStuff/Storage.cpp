@@ -9,3 +9,7 @@ void Storage::onBuild(Resources *resources) {
 
     resources->addStorage(this->getStorage());
 }
+
+void Storage::onDestroy(Resources *resources) {
+        resources->addStorage(this->getStorage()*-1);
+}

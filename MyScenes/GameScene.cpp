@@ -18,7 +18,7 @@ void GameScene::init() {
         for (int j=0; j<TILE_ROWS; j++)
         {
             auto loc = gridLocationToPixel(i, j);
-            auto tile = new Clickable(loc.x, loc.x + TILE_SIZE_PX, loc.y, loc.y + TILE_SIZE_PX);
+            auto tile = new Clickable(loc[0], loc[0] + TILE_SIZE_PX, loc[1], loc[1] + TILE_SIZE_PX);
             tile->setCommand(new TileClickCommand(j, i));
             buttons.push_back(tile);
         }
@@ -47,20 +47,20 @@ void GameScene::update(Game *game) {
         for (int j=0; j<TILE_ROWS; j++)
         {
             auto loc = gridLocationToPixel(i, j);
-            perFrameWidgets.push_back(createImageWidget(loc.x, loc.y, bdg_bg));
+            perFrameWidgets.push_back(createImageWidget(loc[0], loc[1], bdg_bg));
         }
     }
 
-    auto buildings = game->getBuildingToGrid();
-    auto tile_bg = resourceManager->get_bitmap("base_tile");
+    auto buildings = game->getActiveBuildings();
     for (const auto &building : buildings) {
-        auto bdgcorner = building.second;
+        auto tile_bg = resourceManager->get_bitmap(building->getBitmapName().c_str());
+        auto bdgcorner = building->getXY();
 
-        for (const auto &bdgloc : building.first->getLocs()) {
-            int i = bdgcorner.x + bdgloc.x;
-            int j = bdgcorner.y + bdgloc.y;
+        for (const auto &bdgloc : building->getLocs()) {
+            int i = bdgcorner[0] + bdgloc[0];
+            int j = bdgcorner[1] + bdgloc[1];
             auto loc = gridLocationToPixel(j, i);
-            perFrameWidgets.push_back(createImageWidget(loc.x, loc.y, tile_bg));
+            perFrameWidgets.push_back(createImageWidget(loc[0], loc[1], tile_bg));
         }
     }
 
@@ -71,13 +71,8 @@ void GameScene::update(Game *game) {
 
 }
 
-Vector2d<int> GameScene::gridLocationToPixel(int i, int j) {
-    Vector2d<int> out;
-
-    out.x = i*TILE_SIZE_PX + TILE_ROW_START_PX;
-    out.y = j*TILE_SIZE_PX + TILE_COL_START_PX;
-
-    return out;
+Point2d GameScene::gridLocationToPixel(int i, int j) {
+    return Point2d({i*TILE_SIZE_PX + TILE_ROW_START_PX, j*TILE_SIZE_PX + TILE_COL_START_PX});
 }
 
 void GameScene::updateResourceDisplay(Game *game) {
@@ -97,14 +92,14 @@ void GameScene::updateResourceDisplay(Game *game) {
     perFrameWidgets.push_back(txt);
 }
 
-void GameScene::createResourceLine(std::string name, int value, int maxval, int height) {
+void GameScene::createResourceLine(const std::string &name, int value, int maxval, int height) {
     std::string valstr = std::to_string(value) + " / " + std::to_string(maxval) ;
     auto txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, height, name + valstr );
     txt->setColor(al_map_rgb(0,0,0));
     perFrameWidgets.push_back(txt);
 }
 
-void GameScene::createResourceLine(std::string name, int value, int height) {
+void GameScene::createResourceLine(const std::string &name, int value, int height) {
     auto txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, height, name + std::to_string(value) );
     txt->setColor(al_map_rgb(0,0,0));
     perFrameWidgets.push_back(txt);

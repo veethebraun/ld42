@@ -22,8 +22,8 @@ class Scene {
 protected:
     std::map<int,GameCommand*> keybinds;
 
-    Button * createButtonWithText(int x1, int x2, int y1, int y2, std::string text);
-    Text * createText(int x, int y, std::string text);
+    Button * createButtonWithText(int x1, int x2, int y1, int y2,const std::string &text);
+    Text * createText(int x, int y, const std::string &text);
     ImageWidget* createImageWidget(int x, int y, ALLEGRO_BITMAP *bitmap);
 
     std::vector<Widget*> drawables;

@@ -13,6 +13,11 @@ public:
     WindBuilding(int x, int y);
 
     void resourceGeneration(Resources* resources) override {};
+    std::string getBitmapName() override {
+        return "wind_power";
+    };
+    void onDestroy(Resources *resources) override;
+    ~WindBuilding() override = default;
 protected:
     std::valarray<int> getCost() override;
 

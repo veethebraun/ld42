@@ -13,6 +13,11 @@ public:
     MaterialStorage(int x, int y);
 
     void resourceGeneration(Resources* resources) override {};
+    std::string getBitmapName() override {
+        return "mat_store";
+    };
+
+    ~MaterialStorage() override = default;
 protected:
     std::valarray<int> getCost() override;
     std::valarray<int> getStorage() override;

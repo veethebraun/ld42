@@ -28,12 +28,12 @@ private:
     std::vector<Widget*> background;
     std::vector<Widget*> perFrameWidgets;
 
-    Vector2d<int> gridLocationToPixel(int i, int j);
+    Point2d gridLocationToPixel(int i, int j);
 
     void updateResourceDisplay(Game* game);
 
-    void createResourceLine(std::string name, int value, int height);
-    void createResourceLine(std::string name, int value, int maxval, int height);
+    void createResourceLine(const std::string &name, int value, int height);
+    void createResourceLine(const std::string &name, int value, int maxval, int height);
 
 };
 

@@ -13,6 +13,10 @@ public:
     FuelStorage(int x, int y);
 
     void resourceGeneration(Resources* resources) override {};
+    std::string getBitmapName() override {
+        return "fuel_store";
+    };
+    ~FuelStorage() override = default;
 protected:
     std::valarray<int> getCost() override;
     std::valarray<int> getStorage() override;

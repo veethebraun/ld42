@@ -10,7 +10,7 @@
 Scene::Scene(ResourceManager *resourceManager, AudioStuff *audioManager) : resourceManager(resourceManager), audioManager(audioManager) {
 }
 
-Button *Scene::createButtonWithText(int x1, int x2, int y1, int y2, std::string text) {
+Button *Scene::createButtonWithText(int x1, int x2, int y1, int y2, const std::string &text) {
     auto widget_group = new WidgetComposition();
 
     auto bg = new FilledRectangle(x1, y1, x2, y2, al_map_rgb(0,0,124));
@@ -28,7 +28,7 @@ Button *Scene::createButtonWithText(int x1, int x2, int y1, int y2, std::string 
     return button;
 }
 
-Text *Scene::createText(int x, int y, std::string text) {
+Text *Scene::createText(int x, int y, const std::string &text) {
     auto textbox = new Text(resourceManager->get_font("main_font"), x, y, text);
 
     drawables.push_back(textbox);

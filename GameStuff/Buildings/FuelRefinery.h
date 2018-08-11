@@ -13,6 +13,13 @@ public:
     FuelRefinery(int x, int y);
 
     void resourceGeneration(Resources* resources) override;
+    void onDestroy(Resources *resources) override;
+
+    std::string getBitmapName() override {
+        return "fuel_ref";
+    };
+
+    ~FuelRefinery() override = default;
 protected:
     std::valarray<int> getCost() override;
 
