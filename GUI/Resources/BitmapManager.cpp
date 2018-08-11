@@ -21,6 +21,8 @@ ALLEGRO_BITMAP *BitmapManager::get(const char *key) {
 
 BitmapManager::BitmapManager(const char *yamlfile) {
     YAML::Node base = YAML::LoadFile(yamlfile);
+    if (base.size() == 0)
+        return;
 
     assert(base.IsMap());
 

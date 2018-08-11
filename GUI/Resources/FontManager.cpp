@@ -9,6 +9,8 @@
 
 FontManager::FontManager(std::string filename) {
     YAML::Node base = YAML::LoadFile(filename);
+    if (base.size() == 0)
+        return;
 
     assert(base.IsMap());
     for (auto &&item : base) {

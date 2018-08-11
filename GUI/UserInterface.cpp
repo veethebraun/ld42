@@ -5,6 +5,7 @@
 #include <iostream>
 #include "UserInterface.h"
 #include "allegro5/allegro.h"
+#include "Commands/TimeTickCommand.h"
 #include <queue>
 
 void UserInterface::init() {
@@ -14,16 +15,17 @@ void UserInterface::init() {
 
     event_queue = al_create_event_queue();
 
+    timers.push_back(new CommandTimer(1.0, new TimeTickCommand()));
     graphics_timer = new CommandTimer(1.0/20.0, nullptr);
     timers.push_back(graphics_timer);
 
-    al_register_event_source(event_queue, al_get_keyboard_event_source() );
-    al_register_event_source(event_queue, al_get_mouse_event_source() );
     for (const auto &item : timers) {
         al_register_event_source(event_queue, item->getEventSource());
     }
+    al_register_event_source(event_queue, al_get_keyboard_event_source() );
+    al_register_event_source(event_queue, al_get_mouse_event_source() );
 
-    window = al_create_display(1000,1000);
+    window = al_create_display(1920,1080);
 
     game = new Game();
     game->init();

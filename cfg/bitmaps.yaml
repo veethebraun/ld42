@@ -1,2 +1,11 @@
-#name:
-#  file: <filepath>
+game_bg:
+  file: imgs/GameGame_background.png
+
+game_ui_bg:
+  file: imgs/InterfaceBack.png
+
+tower_tile_bg:
+  file: imgs/tower_tile_bg.png
+
+base_tile:
+  file: imgs/base_tile.png

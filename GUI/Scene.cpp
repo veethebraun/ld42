@@ -65,7 +65,7 @@ void Scene::draw() {
 
 ImageWidget *Scene::createImageWidget(int x, int y, ALLEGRO_BITMAP *bitmap) {
     auto img = new ImageWidget(x, y, bitmap);
-    drawables.push_back(img);
+    //drawables.push_back(img);
     return img;
 }
 

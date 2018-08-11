@@ -1,4 +1,4 @@
-#font_name:
-#  file: <filepath>
-#  size: <fontsize>
+base_font:
+  file: imgs/Kanit-Medium.ttf
+  size: 30
 
