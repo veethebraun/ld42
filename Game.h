@@ -12,6 +12,8 @@
 #include "GUI/SceneList.h"
 #include "GameStuff/Building.h"
 #include "vectors.h"
+#include "GameStuff/Resources.h"
+#include "GameStuff/BuildingFactory.h"
 
 #define GRID_ROWS 5
 #define GRID_COLS 7
@@ -27,6 +29,8 @@ public:
     void init();
     const std::map<Building *, Vector2d<int>> &getBuildingToGrid() const;
 
+    Resources *getResource() const;
+
 private:
     SceneList current_scene = SceneList::NONE;
     std::array<std::array<Building*,GRID_COLS>,GRID_ROWS> buildings = {{{nullptr}}};
@@ -41,9 +45,22 @@ private:
 
     void handleTimeTick();
 
-    int resource = 0;
+    Resources* resource = nullptr;
+
+    BuildingFactory buildingFactory;
+
+    BuildingType currentBuildingSelection = BuildingType::NONE;
+
+    std::string message = "";
+
+    bool buildingsFree = false;
 public:
-    int getResource() const;
+    const std::string &getMessage() const;
+
+    void setMessage(const std::string &message);
+
+public:
+    BuildingType getCurrentBuildingSelection() const;
 };
 
 

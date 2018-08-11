@@ -1,0 +1,35 @@
+//
+// Created by vbrau on 8/11/2018.
+//
+
+#ifndef LD42_BUILDINGFACTORY_H
+#define LD42_BUILDINGFACTORY_H
+
+#include "Building.h"
+#include <string>
+
+enum class BuildingType {
+    MINE,
+    WIND,
+    STEEL,
+    MAT_STORAGE,
+    FUEL,
+    FUEL_STORAGE,
+    NONE
+};
+
+std::string getBuildingTypeStr(BuildingType buildingType);
+
+class BuildingFactory {
+public:
+
+    Building* getNewBuilding(BuildingType buildingType, int x, int y);
+private:
+    template<typename T>
+    T* getBuilding(int x, int y);
+
+
+};
+
+
+#endif //LD42_BUILDINGFACTORY_H

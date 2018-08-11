@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by vbrau on 8/10/2018.
 //
@@ -5,10 +7,14 @@
 #ifndef LD42_BUILDING_H
 #define LD42_BUILDING_H
 
+#include <vector>
+#include "Resources.h"
+#include "../vectors.h"
+#include <map>
 
 class Building {
 public:
-    Building(int x, int y, int x_size, int y_size) : x(x), y(y), x_size(x_size), y_size(y_size) {};
+    Building(int x, int y) : x(x), y(y) {};
 
     int getX() const {
         return x;
@@ -18,22 +24,29 @@ public:
         return y;
     }
 
-    int getX_size() const {
-        return x_size;
-    }
+    virtual void resourceGeneration(Resources *resources) = 0;
 
-    int getY_size() const {
-        return y_size;
-    }
+    virtual void onBuild(Resources *resources);
 
-    int output_resources();
+    bool canBuild(Resources *resources);
+
+    //virtual void onDestroy(Resources *resources) = 0;
+    //virtual void onDelete(Resources *resources) = 0;
+protected:
+    virtual std::valarray<int> getCost() = 0;
+    std::map<Vector2d<int>, bool> requiredLocs;
 
 private:
     int x;
     int y;
 
-    int x_size;
-    int y_size;
+    std::vector<Vector2d<int>> locs;
+public:
+    void setLocs(const std::vector<Vector2d<int>> &locs);
+
+public:
+    const std::vector<Vector2d<int>> &getLocs() const;
+    bool isLocRequired(Vector2d<int> loc);
 };
 
 

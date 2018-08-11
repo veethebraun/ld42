@@ -30,6 +30,11 @@ private:
 
     Vector2d<int> gridLocationToPixel(int i, int j);
 
+    void updateResourceDisplay(Game* game);
+
+    void createResourceLine(std::string name, int value, int height);
+    void createResourceLine(std::string name, int value, int maxval, int height);
+
 };
 
 
