@@ -7,9 +7,6 @@ game_ui_bg:
 tower_tile_bg:
   file: imgs/steel_bg.png
 
-base_tile:
-  file: imgs/base_tile.png
-
 fuel_ref:
   file: imgs/fuel_refine.png
 
@@ -82,3 +79,5 @@ howto_screen:
 
 win_screen:
   file: imgs/win_screen.png
+lose_screen:
+  file: imgs/lose_screen.png

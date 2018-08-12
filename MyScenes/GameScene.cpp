@@ -63,6 +63,11 @@ void GameScene::update(Game *game) {
         audioManager->play_audio_fx(resourceManager->get_audio_sample("click"));
     }
 
+    if (game->isPlayExplode())
+    {
+        audioManager->play_audio_fx(resourceManager->get_audio_sample("explode"));
+    }
+
     drawables.clear();
     for (auto frameWidget : perFrameWidgets) {
         delete frameWidget;

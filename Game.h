@@ -100,6 +100,10 @@ private:
 
     void triggerWin();
 
+    bool playExplode = false;
+public:
+    bool isPlayExplode() const;
+
 public:
     bool isReadyToLaunch() const;
     bool closeToDrop();

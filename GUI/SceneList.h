@@ -10,6 +10,7 @@ enum class SceneList {
     HOWTO,
     GAME,
     WIN,
+    LOSE,
     NONE
 };
 

@@ -28,7 +28,7 @@ GameCommand * Game::handleCommand(GameCommand *cmd) {
         }
     }
 
-    if (current_scene == SceneList::WIN) {
+    if (current_scene == SceneList::WIN || current_scene == SceneList::LOSE) {
         auto play = dynamic_cast<PlayGameCommand*>(cmd);
         if (play != nullptr) {
             needToHandleClick = true;
@@ -107,6 +107,7 @@ SceneList Game::getCurrentScene() const {
 
 void Game::clearAfterFrame() {
     needToHandleClick = false;
+    playExplode = false;
 }
 
 void Game::placeBuilding(int x, int y) {
@@ -210,6 +211,10 @@ void Game::dropBuildings() {
            buildingsToRemove.push_back(building) ;
         }
     }
+    if (!buildingsToRemove.empty())
+    {
+        playExplode = true;
+    }
 
     activeBuildings.erase( remove_if( begin(activeBuildings),end(activeBuildings),
                         [&](Building* x){return find(begin(buildingsToRemove),end(buildingsToRemove),x)!=end(buildingsToRemove);}), end(activeBuildings) );
@@ -237,6 +242,19 @@ void Game::dropBuildings() {
     }
 
     eligibleForBuild = newEligibility;
+    bool lost = true;
+    for (size_t i=0; i< GRID_ROWS; i++) {
+        for (size_t j = 0; j < GRID_COLS; j++) {
+            if (eligibleForBuild.at(i).at(j)) {
+                lost = false;
+                break;
+            }
+        }
+    }
+
+    if (lost) {
+        current_scene = SceneList ::LOSE;
+    }
     nextNewRow += 1;
     level++;
 }
@@ -334,4 +352,8 @@ bool Game::closeToDrop() {
 
 bool Game::isNeedToHandleClick() const {
     return needToHandleClick;
+}
+
+bool Game::isPlayExplode() const {
+    return playExplode;
 }

@@ -3,3 +3,6 @@ bg_music:
 
 click:
   file: imgs/select.wav
+
+explode:
+  file: imgs/explode.wav
