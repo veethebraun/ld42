@@ -1,3 +1,2 @@
-#bg_music_1:
-#  file: test_bg.wav
-
+bg_music:
+  file: imgs/ld42_musac.ogg

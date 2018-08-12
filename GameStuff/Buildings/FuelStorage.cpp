@@ -5,11 +5,11 @@
 #include "FuelStorage.h"
 
 std::valarray<int> FuelStorage::getCost() {
-    return {-1, 0, -3, 0, 0};
+    return {-FUEL_STORE_POWER, 0, -FUEL_STORE_STEEL_COST, 0, 0};
 }
 
 std::valarray<int> FuelStorage::getStorage() {
-    return {0,0,0,15,0};
+    return {0,0,0,FUEL_STORE_AMOUNT,0};
 }
 
 FuelStorage::FuelStorage(int x, int y) : Storage(x, y) {

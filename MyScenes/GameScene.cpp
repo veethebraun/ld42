@@ -2,10 +2,12 @@
 // Created by vbrau on 8/10/2018.
 //
 
+#include <iostream>
 #include "GameScene.h"
 #include "../GUI/Commands/TileClickCommand.h"
 #include "../GameStuff/Building.h"
 #include "../GUI/Commands/SelectBuildingCommand.h"
+#include "../GUI/Commands/NewRowCommand.h"
 
 void GameScene::init() {
     background.push_back(createImageWidget(0,0,resourceManager->get_bitmap("game_bg")));
@@ -30,6 +32,7 @@ void GameScene::init() {
     keybinds[ALLEGRO_KEY_R] = new SelectBuildingCommand(BuildingType::MAT_STORAGE);
     keybinds[ALLEGRO_KEY_F] = new SelectBuildingCommand(BuildingType::FUEL);
     keybinds[ALLEGRO_KEY_G] = new SelectBuildingCommand(BuildingType::FUEL_STORAGE);
+    keybinds[ALLEGRO_KEY_N] = new NewRowCommand();
     keybinds[ALLEGRO_KEY_ESCAPE] = new SelectBuildingCommand(BuildingType::NONE);
 }
 
@@ -46,8 +49,10 @@ void GameScene::update(Game *game) {
     {
         for (int j=0; j<TILE_ROWS; j++)
         {
-            auto loc = gridLocationToPixel(i, j);
-            perFrameWidgets.push_back(createImageWidget(loc[0], loc[1], bdg_bg));
+            if (game->buildableAt((size_t) j,(size_t) i)) {
+                auto loc = gridLocationToPixel(i, j);
+                perFrameWidgets.push_back(createImageWidget(loc[0], loc[1]-27, bdg_bg)); // 27 for offset in tile_bg
+            }
         }
     }
 
@@ -103,4 +108,8 @@ void GameScene::createResourceLine(const std::string &name, int value, int heigh
     auto txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, height, name + std::to_string(value) );
     txt->setColor(al_map_rgb(0,0,0));
     perFrameWidgets.push_back(txt);
+}
+
+void GameScene::onSceneSwitch() {
+    audioManager->play_music(resourceManager->get_audio_sample("bg_music"));
 }

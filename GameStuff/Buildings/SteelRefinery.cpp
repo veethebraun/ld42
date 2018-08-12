@@ -5,14 +5,15 @@
 #include "SteelRefinery.h"
 
 void SteelRefinery::resourceGeneration(Resources *resources) {
-    int remaining = resources->getSteelStorage() - resources->getSteel();
-    int output = std::min(std::min(3, resources->getRawMaterial()), remaining);
-    resources->addResources({0, -output, output, 0, 0});
-
+    if (!destroyed) {
+        int remaining = resources->getSteelStorage() - resources->getSteel();
+        int output = std::min(std::min(STEEL_RATE, resources->getRawMaterial()), remaining);
+        resources->addResources({0, -output, output, 0, 0});
+    }
 }
 
 std::valarray<int> SteelRefinery::getCost() {
-    return {-3,0,-5,0,0};
+    return {-STEEL_REFINERY_POWER,0,-STEEL_REFINERY_STEEL_COST,0,0};
 }
 
 SteelRefinery::SteelRefinery(int x, int y) : Building(x, y) {
@@ -23,6 +24,6 @@ SteelRefinery::SteelRefinery(int x, int y) : Building(x, y) {
 }
 
 void SteelRefinery::onDestroy(Resources *resources) {
-    destroyed = true;
+    resources->addResources({STEEL_REFINERY_POWER, 0, 0, 0, 0});
 
 }

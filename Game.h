@@ -18,6 +18,8 @@
 
 #define NUM_TIME_STEPS_FOR_DROP 6
 
+typedef std::array<std::array<bool,GRID_COLS>,GRID_ROWS> Grid;
+
 class Game {
 public:
     GameCommand * handleCommand(GameCommand *cmd);
@@ -36,11 +38,14 @@ public:
 
 private:
     SceneList current_scene = SceneList::NONE;
-    std::array<std::array<bool,GRID_COLS>,GRID_ROWS> buildings = {{{false}}};
+    Grid buildings = {{{false}}};
+    Grid eligibleForBuild = {{{true}}};
 
     std::vector<Building*> activeBuildings;
 public:
     const std::vector<Building *> &getActiveBuildings() const;
+
+    bool buildableAt(size_t i, size_t j);
 
 private:
 
@@ -69,6 +74,14 @@ private:
     int dropCounter = 0;
 
     void fillBuildings();
+
+    void fillGrid(Grid &grid, bool val);
+
+    void printEligibleBuildings();
+
+    void addNewRow();
+
+    int nextNewRow = -1;
 };
 
 

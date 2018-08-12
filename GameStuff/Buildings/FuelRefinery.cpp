@@ -5,13 +5,15 @@
 #include "FuelRefinery.h"
 
 void FuelRefinery::resourceGeneration(Resources *resources) {
-    int remaining = resources->getFuelStorage() - resources->getFuel();
-    int output = std::min(std::min(2, resources->getRawMaterial()), remaining);
-    resources->addResources({0, -output, 0, output, 0});
+    if (!destroyed) {
+        int remaining = resources->getFuelStorage() - resources->getFuel();
+        int output = std::min(std::min(FUEL_REFINERY_RATE, resources->getRawMaterial()), remaining);
+        resources->addResources({0, -output, 0, output, 0});
+    }
 }
 
 std::valarray<int> FuelRefinery::getCost() {
-    return {-3, 0, 6, 0, 0};
+    return {-FUEL_REFINERY_POWER, 0, -FUEL_REFINERY_STEEL_COST, 0, 0};
 }
 
 FuelRefinery::FuelRefinery(int x, int y) : Building(x, y) {
@@ -22,5 +24,4 @@ FuelRefinery::FuelRefinery(int x, int y) : Building(x, y) {
 }
 
 void FuelRefinery::onDestroy(Resources *resources) {
-    destroyed = true;
 }

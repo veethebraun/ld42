@@ -5,7 +5,7 @@ game_ui_bg:
   file: imgs/InterfaceBack.png
 
 tower_tile_bg:
-  file: imgs/tower_tile_bg.png
+  file: imgs/steel_bg.png
 
 base_tile:
   file: imgs/base_tile.png

@@ -7,6 +7,7 @@
 #include "GUI/Commands/TileClickCommand.h"
 #include "GUI/Commands/TimeTickCommand.h"
 #include "GUI/Commands/SelectBuildingCommand.h"
+#include "GUI/Commands/NewRowCommand.h"
 
 GameCommand * Game::handleCommand(GameCommand *cmd) {
 
@@ -26,6 +27,11 @@ GameCommand * Game::handleCommand(GameCommand *cmd) {
     if (time != nullptr) {
         handleTimeTick();
     }
+
+    auto newRow = dynamic_cast<NewRowCommand*>(cmd);
+    if (newRow != nullptr) {
+        addNewRow();
+    }
     return nullptr;
 }
 
@@ -34,6 +40,8 @@ void Game::init() {
     current_scene = SceneList::GAME;
     resource = new Resources();
 
+    fillGrid(eligibleForBuild, true);
+    printEligibleBuildings();
     buildingsFree = true;
     currentBuildingSelection = BuildingType ::MAT_STORAGE;
     placeBuilding(0,0);
@@ -84,9 +92,14 @@ bool Game::doesBuildingFit(Building *building) {
         if (!building->isLocRequired(loc))
             continue;
 
+        std::cout <<"A";
         if (i < 0 || i >= GRID_ROWS || j < 0 || j >= GRID_COLS)
             return false;
+        std::cout <<"B";
         if (hasBuilding(i, j))
+            return false;
+        std::cout <<"C" << i << j;
+        if (!eligibleForBuild.at((size_t) i).at((size_t)j))
             return false;
     }
     return true;
@@ -165,6 +178,16 @@ void Game::dropBuildings() {
         }
     }
     printBuildings();
+
+    Grid newEligibility = {{{false}}};
+    for (size_t i=1; i< GRID_ROWS; i++) {
+        for (size_t j=0; j<GRID_COLS; j++) {
+            newEligibility.at(i).at(j) = eligibleForBuild.at(i-1).at(j);
+        }
+    }
+
+    eligibleForBuild = newEligibility;
+    nextNewRow += 1;
 }
 
 void Game::populateBuilding(Building *building) {
@@ -174,7 +197,11 @@ void Game::populateBuilding(Building *building) {
         size_t i = static_cast<size_t>(bdgloc[0] + loc[0]);
         size_t j = static_cast<size_t>(bdgloc[1] + loc[1]);
 
-        buildings.at(i).at(j) = true;
+        if (i < GRID_ROWS && j < GRID_COLS) {
+
+            std::cout << "D" << i << j;
+            buildings.at(i).at(j) = true;
+        }
     }
 }
 
@@ -190,3 +217,47 @@ void Game::fillBuildings() {
     }
 }
 
+bool Game::buildableAt(size_t i, size_t j) {
+    return eligibleForBuild.at(i).at(j);
+}
+
+void Game::addNewRow() {
+    if (nextNewRow < 0 || nextNewRow >= GRID_ROWS)
+        return;
+    bool good = false;
+    for (const auto &item : eligibleForBuild.at((size_t)nextNewRow)) {
+        if (!item) {
+            good = true;
+            break;
+        }
+    }
+
+    if (!good)
+        return;
+
+    if (resource->getSteel() > STEEL_FOR_NEW_ROW || buildingsFree) {
+
+        for (size_t j = 0; j < GRID_COLS; j++) {
+            eligibleForBuild.at((size_t) nextNewRow).at(j) = true;
+        }
+        nextNewRow -= 1;
+    }
+
+}
+
+void Game::fillGrid(Grid &grid, bool val) {
+    for (size_t i=0; i<GRID_ROWS; i++) {
+        for (size_t j = 0; j < GRID_COLS; j++) {
+            grid.at(i).at(j) = val;
+        }
+    }
+}
+
+void Game::printEligibleBuildings() {
+    for (size_t i=0; i<GRID_ROWS; i++){
+        for (size_t j=0; j<GRID_COLS; j++) {
+            std::cout << (eligibleForBuild.at(i).at(j));
+        }
+        std::cout << std::endl;
+    }
+}

@@ -24,6 +24,8 @@ public:
     void init() override;
     void update(Game* game) override;
 
+    void onSceneSwitch() override;
+
 private:
     std::vector<Widget*> background;
     std::vector<Widget*> perFrameWidgets;
