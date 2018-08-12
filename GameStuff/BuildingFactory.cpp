@@ -41,7 +41,9 @@ std::vector<std::string> BuildingFactory::getFrameNames(BuildingType buildingTyp
 
     switch (buildingType) {
         case BuildingType::MINE:
-            frames.emplace_back("mine");
+            frames.emplace_back("mine_f1");
+            frames.emplace_back("mine_f2");
+            frames.emplace_back("mine_f3");
             break;
 
         case BuildingType::WIND:
@@ -69,7 +71,8 @@ std::vector<std::string> BuildingFactory::getFrameNames(BuildingType buildingTyp
             break;
 
         case BuildingType::ROCKET:
-            frames.emplace_back("rocket_silo");
+            frames.emplace_back("rocket_silo_f1");
+            frames.emplace_back("rocket_silo_f2");
             break;
 
         case BuildingType::NONE:
@@ -131,6 +134,19 @@ std::string BuildingFactory::getProvides(BuildingType buildingType) {
 
         case BuildingType::NONE:
             return "";
+    }
+}
+
+int BuildingFactory::getAnimSpeed(BuildingType buildingType) {
+    switch (buildingType) {
+        case BuildingType::MINE:
+            return 5;
+
+        case BuildingType ::ROCKET:
+            return 3;
+
+        default:
+            return 1;
     }
 }
 

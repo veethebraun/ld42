@@ -14,16 +14,23 @@ fuel_ref:
   file: imgs/fuel_refine.png
 
 fuel_store:
-  file: imgs/fuel_storage.png
+  file: imgs/fuel_tank.png
 
 mat_store:
   file: imgs/storage.png
 
-mine:
-  file: imgs/mine.png
+mine_f1:
+  file: imgs/mine_f1.png
+mine_f2:
+  file: imgs/mine_f2.png
+mine_f3:
+  file: imgs/mine_f3.png
 
-rocket_silo:
-  file: imgs/rocket_silo.png
+rocket_silo_f1:
+  file: imgs/rocket_silo_f1.png
+
+rocket_silo_f2:
+  file: imgs/rocket_silo_f2.png
 
 steel_ref:
   file: imgs/steel_refine.png
@@ -49,6 +56,9 @@ ground:
 tentacles:
   file: imgs/tentacles.png
 
+tentacles2:
+  file: imgs/tentacles2.png
+
 dis_launch_button:
   file: imgs/disabled_launch_button.png
 
@@ -57,3 +67,18 @@ active_launch_button_f1:
 
 active_launch_button_f2:
   file: imgs/active_launch_button_f2.png
+
+title_scene:
+  file: imgs/title_scene.png
+
+play_button:
+  file: imgs/PlayButton.png
+
+howto_button:
+  file: imgs/HowToButton.png
+
+howto_screen:
+  file: imgs/HelpScreen.png
+
+win_screen:
+  file: imgs/win_screen.png

@@ -9,9 +9,9 @@
 #include <queue>
 
 void UserInterface::init() {
-    resourceManager = new ResourceManager(R"(C:\Users\vbrau\CLionProjects\ld42\cmake-build-debug\cfg\fonts2.yaml)",
-                                          R"(C:\Users\vbrau\CLionProjects\ld42\cmake-build-debug\cfg\bitmaps.yaml)",
-                                          R"(C:\Users\vbrau\CLionProjects\ld42\cmake-build-debug\cfg\audio.yaml)");
+    resourceManager = new ResourceManager(R"(cfg\fonts2.yaml)",
+                                          R"(cfg\bitmaps.yaml)",
+                                          R"(cfg\audio.yaml)");
     audioManager = new AudioStuff();
     audioManager->init();
 

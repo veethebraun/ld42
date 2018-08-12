@@ -4,9 +4,15 @@
 
 #include "SceneManager.h"
 #include "../MyScenes/GameScene.h"
+#include "../MyScenes/TitleScene.h"
+#include "../MyScenes/HowToScene.h"
+#include "../MyScenes/WinScreen.h"
 
 SceneManager::SceneManager(ResourceManager *resourceManager, AudioStuff *audioStuff) : resourceManager(resourceManager), audioStuff(audioStuff) {
+    add_scene<TitleScene>(SceneList::TITLE);
+    add_scene<HowToScene>(SceneList::HOWTO);
     add_scene<GameScene>(SceneList::GAME);
+    add_scene<WinScreen>(SceneList::WIN);
     //add_scene<WinScreen>(SceneList::Win);
 }
 

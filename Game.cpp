@@ -9,50 +9,77 @@
 #include "GUI/Commands/SelectBuildingCommand.h"
 #include "GUI/Commands/NewRowCommand.h"
 #include "GUI/Commands/LaunchCommand.h"
+#include "GUI/Commands/PlayGameCommand.h"
+#include "GUI/Commands/HowToCommand.h"
 
 GameCommand * Game::handleCommand(GameCommand *cmd) {
+    if (current_scene == SceneList::TITLE || current_scene == SceneList::HOWTO)
+    {
+        auto play = dynamic_cast<PlayGameCommand*>(cmd);
+        if (play != nullptr) {
+            needToHandleClick = true;
+            current_scene = SceneList ::GAME;
+        }
 
-    std::cout << "have " << activeBuildings.size() << " buildings.." << std::endl;
-    auto tile = dynamic_cast<TileClickCommand*>(cmd);
-    if (tile != nullptr) {
-        placeBuilding(tile->getI(), tile->getJ());
-        std::cout << "[" << tile->getI() << ", " << tile->getJ() << "]" << std::endl;
-    }
-
-    auto build = dynamic_cast<SelectBuildingCommand*>(cmd);
-    if (build != nullptr) {
-        currentBuildingSelection = build->getBuildingType();
-        if (currentBuildingSelection == BuildingType::NONE) {
-            message = "";
+        auto howto = dynamic_cast<HowToCommand*>(cmd);
+        if (howto != nullptr) {
+            needToHandleClick = true;
+            current_scene = SceneList::HOWTO;
         }
     }
 
-    auto time = dynamic_cast<TimeTickCommand*>(cmd);
-    if (time != nullptr) {
-        handleTimeTick();
+    if (current_scene == SceneList::WIN) {
+        auto play = dynamic_cast<PlayGameCommand*>(cmd);
+        if (play != nullptr) {
+            needToHandleClick = true;
+            for (const auto&building : activeBuildings) {
+                delete building;
+            }
+            activeBuildings.clear();
+            init();
+            current_scene = SceneList ::GAME;
+        }
     }
 
-    auto newRow = dynamic_cast<NewRowCommand*>(cmd);
-    if (newRow != nullptr) {
-        addNewRow();
-    }
+    if (current_scene == SceneList::GAME) {
+        auto tile = dynamic_cast<TileClickCommand *>(cmd);
+        if (tile != nullptr) {
+            placeBuilding(tile->getI(), tile->getJ());
+        }
 
-    auto launch = dynamic_cast<LaunchCommand*>(cmd);
-    if (launch != nullptr)
-    {
-        if (readyToLaunch)
-            triggerWin();
+        auto build = dynamic_cast<SelectBuildingCommand *>(cmd);
+        if (build != nullptr) {
+            currentBuildingSelection = build->getBuildingType();
+            if (currentBuildingSelection == BuildingType::NONE) {
+                message = "";
+            }
+        }
+
+        auto time = dynamic_cast<TimeTickCommand *>(cmd);
+        if (time != nullptr) {
+            handleTimeTick();
+        }
+
+        auto newRow = dynamic_cast<NewRowCommand *>(cmd);
+        if (newRow != nullptr) {
+            addNewRow();
+        }
+
+        auto launch = dynamic_cast<LaunchCommand *>(cmd);
+        if (launch != nullptr) {
+            if (readyToLaunch)
+                triggerWin();
+        }
     }
     return nullptr;
 }
 
 void Game::init() {
     fillBuildings();
-    current_scene = SceneList::GAME;
+    current_scene = SceneList::TITLE;
     resource = new Resources();
 
     fillGrid(eligibleForBuild, true);
-    printEligibleBuildings();
     buildingsFree = true;
     currentBuildingSelection = BuildingType ::MAT_STORAGE;
     placeBuilding(0,0);
@@ -69,6 +96,9 @@ void Game::init() {
 
     resource->addResources({WIND_POWER_GEN-MINE_POWER-STEEL_REFINERY_POWER,0,0,0,0});
     level = 0;
+    dropCounter = 0;
+    nextNewRow = -1;
+    shrinkRow = 0;
 }
 
 SceneList Game::getCurrentScene() const {
@@ -76,12 +106,12 @@ SceneList Game::getCurrentScene() const {
 }
 
 void Game::clearAfterFrame() {
+    needToHandleClick = false;
 }
 
 void Game::placeBuilding(int x, int y) {
     if (currentBuildingSelection != BuildingType::NONE) {
         auto building = buildingFactory.getNewBuilding(currentBuildingSelection, x, y);
-        std::cout << "placing: " << building << " at " << building->getX() << std::endl;
         if (building->canBuild(resource) || buildingsFree) {
             if (doesBuildingFit(building)) {
                 populateBuilding(building);
@@ -90,12 +120,13 @@ void Game::placeBuilding(int x, int y) {
                     readyToLaunch = true;
                 }
                 currentBuildingSelection = BuildingType::NONE;
+                needToHandleClick = true;
                 setMessage("");
             } else {
-                setMessage("bad location");
+                setMessage("Bad Location");
             }
         } else {
-            setMessage("No Resources");
+            setMessage("Insufficient Resources");
         }
 
     }
@@ -114,15 +145,17 @@ bool Game::doesBuildingFit(Building *building) {
         if (!building->isLocRequired(loc))
             continue;
 
-        std::cout <<"A";
         if (i < 0 || i >= GRID_ROWS || j < 0 || j >= GRID_COLS)
             return false;
-        std::cout <<"B";
         if (hasBuilding(i, j))
             return false;
-        std::cout <<"C" << i << j;
         if (!eligibleForBuild.at((size_t) i).at((size_t)j))
             return false;
+
+        if (building->getBuildingType() == BuildingType::MINE) {
+            if (building->getX() == 0)
+                return false;
+        }
     }
     return true;
 }
@@ -168,16 +201,12 @@ void Game::setMessage(const char *message) {
 
 void Game::dropBuildings() {
     fillBuildings();
-    std::cout << "dropBuildings" << std::endl;
 
     std::vector<Building*> buildingsToRemove;
     for (const auto &building : activeBuildings) {
-        std::cout << "  checking: " << building << std::endl;
         building->dropLevel(resource);
-        std::cout << "  now at: " << building->getXY()[0] << std::endl;
         if (!building->isOnBoard(GRID_ROWS, GRID_COLS))
         {
-            std::cout << "  NO LONGER ON BOARD" << std::endl;
            buildingsToRemove.push_back(building) ;
         }
     }
@@ -192,14 +221,13 @@ void Game::dropBuildings() {
     for (const auto &building : activeBuildings) {
         auto bdgloc = building->getXY();
         for (const auto &loc : building->getLocs()) {
-            size_t i = static_cast<size_t>(bdgloc[0] + loc[0]);
-            size_t j = static_cast<size_t>(bdgloc[1] + loc[1]);
+            auto i = static_cast<size_t>(bdgloc[0] + loc[0]);
+            auto j = static_cast<size_t>(bdgloc[1] + loc[1]);
 
             if (i < GRID_ROWS && j < GRID_COLS)
                 buildings.at(i).at(j) = true;
         }
     }
-    printBuildings();
 
     Grid newEligibility = {{{false}}};
     for (size_t i=1; i< GRID_ROWS; i++) {
@@ -211,19 +239,17 @@ void Game::dropBuildings() {
     eligibleForBuild = newEligibility;
     nextNewRow += 1;
     level++;
-    std::cout << "Rows: " << nextNewRow << " level: " << level << " minus: " << level - nextNewRow << std::endl;
 }
 
 void Game::populateBuilding(Building *building) {
     Point2d bdgloc = building->getXY();
     activeBuildings.push_back(building);
     for (const auto &loc : building->getLocs()) {
-        size_t i = static_cast<size_t>(bdgloc[0] + loc[0]);
-        size_t j = static_cast<size_t>(bdgloc[1] + loc[1]);
+        auto i = static_cast<size_t>(bdgloc[0] + loc[0]);
+        auto j = static_cast<size_t>(bdgloc[1] + loc[1]);
 
         if (i < GRID_ROWS && j < GRID_COLS) {
 
-            std::cout << "D" << i << j;
             buildings.at(i).at(j) = true;
         }
     }
@@ -270,7 +296,6 @@ void Game::addNewRow() {
     }
 
     shrinkRow = (level-nextNewRow)/SHRINK_COL_EVERY_N_ROWS;
-    std::cout << "Rows: " << nextNewRow << " level: " << level << " minus: " << level - nextNewRow << " shrinkRow: " << shrinkRow <<std::endl;
 
 }
 
@@ -300,6 +325,13 @@ bool Game::isReadyToLaunch() const {
 }
 
 void Game::triggerWin() {
-    std::cout << "WINNER!" << std::endl;
+    current_scene = SceneList ::WIN;
+}
 
+bool Game::closeToDrop() {
+    return NUM_TIME_STEPS_FOR_DROP - dropCounter < NUM_TIME_STEPS_FOR_DROP/2;
+}
+
+bool Game::isNeedToHandleClick() const {
+    return needToHandleClick;
 }

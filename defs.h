@@ -9,7 +9,7 @@
 #define GRID_ROWS 5
 #define GRID_COLS 7
 
-#define SHRINK_COL_EVERY_N_ROWS 4
+#define SHRINK_COL_EVERY_N_ROWS 3
 
 #define STEEL_FOR_NEW_ROW 20
 #define STEEL_REFINERY_POWER 5

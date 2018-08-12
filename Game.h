@@ -37,6 +37,11 @@ public:
     BuildingType getCurrentBuildingSelection() const;
 
 private:
+    bool needToHandleClick = false;
+public:
+    bool isNeedToHandleClick() const;
+
+private:
     SceneList current_scene = SceneList::NONE;
     Grid buildings = {{{false}}};
     Grid eligibleForBuild = {{{true}}};
@@ -94,8 +99,10 @@ private:
     bool readyToLaunch = false;
 
     void triggerWin();
+
 public:
     bool isReadyToLaunch() const;
+    bool closeToDrop();
 };
 
 

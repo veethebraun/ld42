@@ -6,7 +6,10 @@
 #define LD42_VBRAUN_SCENELIST_H
 
 enum class SceneList {
+    TITLE,
+    HOWTO,
     GAME,
+    WIN,
     NONE
 };
 

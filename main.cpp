@@ -1,5 +1,3 @@
-#include <iostream>
-#include <vector>
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_font.h"
 #include "allegro5/allegro_ttf.h"
@@ -8,10 +6,7 @@
 #include "allegro5/allegro_audio.h"
 #include "allegro5/allegro_acodec.h"
 
-#include "GUI/Widgets/Text.h"
-#include "GUI/Widgets/Button.h"
 #include "GUI/UserInterface.h"
-#include "GUI/Resources/FontManager.h"
 
 int main(int argc, char **argv) {
     //std::cout << "Hello, World!" << std::endl;

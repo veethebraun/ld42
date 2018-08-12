@@ -16,7 +16,6 @@ FontManager::FontManager(const char *filename) {
 
     char path[FILENAME_MAX];
     _getcwd(path, sizeof(path));
-    std::cout << path << std::endl;
 
     assert(base.IsMap());
     for (auto &&item : base) {

@@ -1,2 +1,5 @@
 bg_music:
   file: imgs/ld42_musac.ogg
+
+click:
+  file: imgs/select.wav

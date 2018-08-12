@@ -20,6 +20,7 @@ public:
     static std::vector<std::string> getFrameNames(BuildingType buildingType);
     static std::valarray<int> getCosts(BuildingType buildingType);
     static std::string getProvides(BuildingType buildingType);
+    static int getAnimSpeed(BuildingType buildingType);
 private:
     template<typename T>
     T* getBuilding(int x, int y);

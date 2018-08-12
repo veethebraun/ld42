@@ -5,12 +5,10 @@
 #include <iostream>
 #include "GameScene.h"
 #include "../GUI/Commands/TileClickCommand.h"
-#include "../GameStuff/Building.h"
+#include "../GUI/Commands/LaunchCommand.h"
 #include "../GUI/Commands/SelectBuildingCommand.h"
 #include "../GUI/Commands/NewRowCommand.h"
 #include "../GUI/Widgets/SlowBitmapAnimation.h"
-#include "../GUI/Commands/LaunchCommand.h"
-#include "../GameStuff/BuildingFactory.h"
 
 #define LAUNCH_BUTTON_X 90
 #define LAUNCH_BUTTON_Y 800
@@ -60,6 +58,11 @@ void GameScene::init() {
 }
 
 void GameScene::update(Game *game) {
+    if (game->isNeedToHandleClick())
+    {
+        audioManager->play_audio_fx(resourceManager->get_audio_sample("click"));
+    }
+
     drawables.clear();
     for (auto frameWidget : perFrameWidgets) {
         delete frameWidget;
@@ -109,19 +112,22 @@ void GameScene::update(Game *game) {
                 frames.push_back(resourceManager->get_bitmap(stringFrame.c_str()));
             }
 
-            auto anim = new SlowBitmapAnimation(loc[0], loc[1], frames, 1);
+            int frameSpeed = BuildingFactory::getAnimSpeed(building->getBuildingType());
+            auto anim = new SlowBitmapAnimation(loc[0], loc[1], frames, frameSpeed);
             if (!building->isDestroyed())
                 anim->setFrameNum(frameNum);
             else
                 anim->setFrameNum(0);
 
             perFrameWidgets.push_back(anim);
-        } else {
-            std::cout << "ERROR, BAD BUILDING TYPE" << std::endl;
         }
     }
 
-    perFrameWidgets.push_back(createImageWidget(0,(4)*TILE_SIZE_PX + TILE_COL_START_PX+70, resourceManager->get_bitmap("tentacles")));
+    if (!game->closeToDrop())
+        perFrameWidgets.push_back(createImageWidget(0,(4)*TILE_SIZE_PX + TILE_COL_START_PX+70, resourceManager->get_bitmap("tentacles")));
+    else
+        perFrameWidgets.push_back(createImageWidget(0,(4)*TILE_SIZE_PX + TILE_COL_START_PX+70, resourceManager->get_bitmap("tentacles2")));
+
 
     updateResourceDisplay(game);
 
@@ -188,7 +194,7 @@ void GameScene::updateResourceDisplay(Game *game) {
     perFrameWidgets.push_back(txt);
 
     txt = new Text(resourceManager->get_font("base_font2"), 0, UI_FONT_SMALL_SIZE*UILine++, game->getMessage());
-    txt->setColor(al_map_rgb(0,120,255));
+    txt->setColor(al_map_rgb(255,0,0));
     perFrameWidgets.push_back(txt);
 
     if (game->isReadyToLaunch()) {
@@ -221,7 +227,6 @@ void GameScene::createResourceLine(const std::string &name, int value, int heigh
 }
 
 void GameScene::onSceneSwitch() {
-    audioManager->play_music(resourceManager->get_audio_sample("bg_music"));
 }
 
 std::string GameScene::getRequiredText(std::valarray<int> inCost) {
