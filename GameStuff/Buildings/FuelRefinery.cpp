@@ -5,7 +5,7 @@
 #include "FuelRefinery.h"
 
 void FuelRefinery::resourceGeneration(Resources *resources) {
-    if (!destroyed) {
+    if (!destroyed && resources->getPower() > 0) {
         int remaining = resources->getFuelStorage() - resources->getFuel();
         int output = std::min(std::min(FUEL_REFINERY_RATE, resources->getRawMaterial()), remaining);
         resources->addResources({0, -output, 0, output, 0});
@@ -24,4 +24,5 @@ FuelRefinery::FuelRefinery(int x, int y) : Building(x, y) {
 }
 
 void FuelRefinery::onDestroy(Resources *resources) {
+    resources->addResources({FUEL_REFINERY_POWER, 0, 0, 0, 0});
 }

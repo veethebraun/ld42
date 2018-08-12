@@ -18,8 +18,9 @@ public:
     };
 
     ~MaterialStorage() override = default;
-protected:
+    BuildingType getBuildingType() override { return BuildingType::MAT_STORAGE; };
     std::valarray<int> getCost() override;
+protected:
     std::valarray<int> getStorage() override;
 
 };

@@ -18,7 +18,7 @@ public:
     };
     void onDestroy(Resources *resources) override;
     ~WindBuilding() override = default;
-protected:
+    BuildingType getBuildingType() override { return BuildingType::WIND; };
     std::valarray<int> getCost() override;
 
 };

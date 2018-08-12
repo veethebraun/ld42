@@ -57,21 +57,25 @@ void UserInterface::run() {
             break;
 
         if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-            if (event.keyboard.keycode == ALLEGRO_KEY_Q) {
+            if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
                 break;
             }
-            if (event.keyboard.keycode == ALLEGRO_KEY_P) {
-                for (const auto &timer : timers) {
-                    if (timer != graphics_timer) {
-                        if (al_get_timer_started(timer->getTimer())) {
-                            al_stop_timer(timer->getTimer());
-                        } else {
-                            al_start_timer(timer->getTimer());
-                        }
-                    }
-                }
-            }
+//            if (event.keyboard.keycode == ALLEGRO_KEY_P) {
+//                for (const auto &timer : timers) {
+//                    if (timer != graphics_timer) {
+//                        if (al_get_timer_started(timer->getTimer())) {
+//                            al_stop_timer(timer->getTimer());
+//                        } else {
+//                            al_start_timer(timer->getTimer());
+//                        }
+//                    }
+//                }
+//            }
             command_queue = current_scene->onKeyboardPress(event);
+        }
+
+        if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+            current_scene->setCurrentMouseLoc(Point2d({event.mouse.x, event.mouse.y}));
         }
 
         if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {

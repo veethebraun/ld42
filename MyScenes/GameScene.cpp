@@ -10,15 +10,18 @@
 #include "../GUI/Commands/NewRowCommand.h"
 #include "../GUI/Widgets/SlowBitmapAnimation.h"
 #include "../GUI/Commands/LaunchCommand.h"
+#include "../GameStuff/BuildingFactory.h"
 
 #define LAUNCH_BUTTON_X 90
 #define LAUNCH_BUTTON_Y 800
 #define LAUNCH_BUTTON_X_SIZE 501
 #define LAUNCH_BUTTON_Y_SIZE 230
+#define UI_FONT_SIZE 45
+#define UI_FONT_SMALL_SIZE 35
 
 void GameScene::init() {
     background.push_back(createImageWidget(0,0,resourceManager->get_bitmap("game_bg")));
-    background.push_back(createImageWidget(UI_START_PX,0,resourceManager->get_bitmap("game_ui_bg")));
+    background.push_back(createImageWidget(UI_START_PX-5,0,resourceManager->get_bitmap("game_ui_bg")));
 
     drawables.insert(drawables.end(), background.begin(), background.end());
 
@@ -39,14 +42,21 @@ void GameScene::init() {
     buttons.push_back(launch);
 
     keybinds[ALLEGRO_KEY_M] = new SelectBuildingCommand(BuildingType::MINE);
+    hotkeyDescriptions["M"] = BuildingType::MINE;
     keybinds[ALLEGRO_KEY_W] = new SelectBuildingCommand(BuildingType::WIND);
+    hotkeyDescriptions["W"] = BuildingType::WIND;
     keybinds[ALLEGRO_KEY_S] = new SelectBuildingCommand(BuildingType::STEEL);
+    hotkeyDescriptions["S"] = BuildingType::STEEL;
     keybinds[ALLEGRO_KEY_R] = new SelectBuildingCommand(BuildingType::MAT_STORAGE);
+    hotkeyDescriptions["R"] = BuildingType::MAT_STORAGE;
     keybinds[ALLEGRO_KEY_F] = new SelectBuildingCommand(BuildingType::FUEL);
+    hotkeyDescriptions["F"] = BuildingType::FUEL;
     keybinds[ALLEGRO_KEY_G] = new SelectBuildingCommand(BuildingType::FUEL_STORAGE);
+    hotkeyDescriptions["G"] = BuildingType::FUEL_STORAGE;
     keybinds[ALLEGRO_KEY_E] = new SelectBuildingCommand(BuildingType::ROCKET);
+    hotkeyDescriptions["E"] = BuildingType::ROCKET;
     keybinds[ALLEGRO_KEY_N] = new NewRowCommand();
-    keybinds[ALLEGRO_KEY_ESCAPE] = new SelectBuildingCommand(BuildingType::NONE);
+    keybinds[ALLEGRO_KEY_Q] = new SelectBuildingCommand(BuildingType::NONE);
 }
 
 void GameScene::update(Game *game) {
@@ -59,9 +69,6 @@ void GameScene::update(Game *game) {
     if (game->getLevel() <= 3)
         perFrameWidgets.push_back(createImageWidget(0,(4+game->getLevel())*TILE_SIZE_PX + TILE_COL_START_PX+70, resourceManager->get_bitmap("ground")));
 
-//    for (auto anim : animations) {
-//        delete anim;
-//    }
     animations.clear();
 
     auto bdg_bg = resourceManager->get_bitmap("tower_tile_bg");
@@ -87,42 +94,45 @@ void GameScene::update(Game *game) {
 
     auto buildings = game->getActiveBuildings();
     for (const auto &building : buildings) {
-        auto tile_bg = resourceManager->get_bitmap(building->getBitmapName().c_str());
         auto bdgcorner = building->getXY();
         auto loc = gridLocationToPixel(bdgcorner[1], bdgcorner[0]);
-        if (building->getBitmapName() == "wind_power") {
-            std::vector<ALLEGRO_BITMAP*> frames;
-            frames.push_back(resourceManager->get_bitmap("wind_power_f1"));
-            frames.push_back(resourceManager->get_bitmap("wind_power_f2"));
-            frames.push_back(resourceManager->get_bitmap("wind_power_f3"));
-            frames.push_back(resourceManager->get_bitmap("wind_power_f4"));
-            frames.push_back(resourceManager->get_bitmap("wind_power_f5"));
-            auto anim = new SlowBitmapAnimation(loc[0], loc[1], frames, 2);
+
+        std::vector<std::string> stringFrames;
+        stringFrames = BuildingFactory::getFrameNames(building->getBuildingType());
+        if (stringFrames.size() == 1) {
+            auto tile_bg = resourceManager->get_bitmap(stringFrames[0].c_str());
+            perFrameWidgets.push_back(createImageWidget(loc[0], loc[1], tile_bg));
+        } else if (stringFrames.size() > 1) {
+            std::vector<ALLEGRO_BITMAP *> frames;
+            frames.reserve(stringFrames.size());
+            for (const auto &stringFrame : stringFrames) {
+                frames.push_back(resourceManager->get_bitmap(stringFrame.c_str()));
+            }
+
+            auto anim = new SlowBitmapAnimation(loc[0], loc[1], frames, 1);
             if (!building->isDestroyed())
                 anim->setFrameNum(frameNum);
             else
                 anim->setFrameNum(0);
-            animations.push_back(anim);
-            perFrameWidgets.push_back(anim);
 
+            perFrameWidgets.push_back(anim);
         } else {
-            perFrameWidgets.push_back(createImageWidget(loc[0], loc[1], tile_bg));
+            std::cout << "ERROR, BAD BUILDING TYPE" << std::endl;
         }
-        //
-//        for (const auto &bdgloc : building->getLocs()) {
-//            int i = bdgcorner[0] + bdgloc[0];
-//            int j = bdgcorner[1] + bdgloc[1];
-//            auto loc = gridLocationToPixel(j, i);
-//            perFrameWidgets.push_back(createImageWidget(loc[0], loc[1], tile_bg));
-//        }
     }
 
     perFrameWidgets.push_back(createImageWidget(0,(4)*TILE_SIZE_PX + TILE_COL_START_PX+70, resourceManager->get_bitmap("tentacles")));
 
     updateResourceDisplay(game);
 
-    drawables.insert(drawables.end(), background.begin(), background.end());
 
+    if (game->getCurrentBuildingSelection() != BuildingType::NONE) {
+        auto frames = BuildingFactory::getFrameNames(game->getCurrentBuildingSelection());
+        perFrameWidgets.push_back(createImageWidget(currentMouseLoc[0]-TILE_SIZE_PX/2, currentMouseLoc[1]-TILE_SIZE_PX/2,
+                resourceManager->get_bitmap(frames.front().c_str())));
+    }
+
+    drawables.insert(drawables.end(), background.begin(), background.end());
     drawables.insert(drawables.end(), perFrameWidgets.begin(), perFrameWidgets.end());
 
     frameNum++;
@@ -135,26 +145,57 @@ Point2d GameScene::gridLocationToPixel(int i, int j) {
 }
 
 void GameScene::updateResourceDisplay(Game *game) {
+    UILine = 0;
+    Text* txt;
 
-    createResourceLine("Power: ", game->getResource()->getPower(), 0);
-    createResourceLine("Raw Material: ", game->getResource()->getRawMaterial(), game->getResource()->getRawMaterialStorage(), 35);
-    createResourceLine("Steel: ", game->getResource()->getSteel(), game->getResource()->getSteelStorage(), 70);
-    createResourceLine("Fuel: ", game->getResource()->getFuel(), game->getResource()->getFuelStorage(), 105);
-    createResourceLine("Life Support: ", game->getResource()->getLifeSupport(), 140);
+    createResourceLine("Power: ", game->getResource()->getPower(), UI_FONT_SIZE*UILine++);
+    createResourceLine("Raw Material: ", game->getResource()->getRawMaterial(), game->getResource()->getRawMaterialStorage(), UI_FONT_SIZE*UILine++);
+    createResourceLine("Steel: ", game->getResource()->getSteel(), game->getResource()->getSteelStorage(), UI_FONT_SIZE*UILine++);
+    createResourceLine("Fuel: ", game->getResource()->getFuel(), game->getResource()->getFuelStorage(), UI_FONT_SIZE*UILine++);
 
-    std::string selectedBuilding = "Building: ";
-    selectedBuilding += getBuildingTypeStr(game->getCurrentBuildingSelection());
-    auto txt = new Text(resourceManager->get_font("base_font"), 0, 0, selectedBuilding);
+    txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, UI_FONT_SIZE*UILine++, "");
+    perFrameWidgets.push_back(txt);
+    txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, UI_FONT_SIZE*UILine++, "");
     perFrameWidgets.push_back(txt);
 
-    txt = new Text(resourceManager->get_font("base_font"), 0, 40, game->getMessage());
+    txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, UI_FONT_SIZE*UILine++, "Press <KEY> to Build:");
+    perFrameWidgets.push_back(txt);
+
+    for (const auto &hotkeyDescription : hotkeyDescriptions) {
+        createShortcutLine(hotkeyDescription, UI_FONT_SIZE*UILine++);
+    }
+    txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, UI_FONT_SIZE*UILine++, "Q: Deselect Building");
+    perFrameWidgets.push_back(txt);
+
+    txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, UI_FONT_SIZE*UILine++, "N: Build Next Level (Costs " + std::to_string(STEEL_FOR_NEW_ROW) + " steel)");
+    perFrameWidgets.push_back(txt);
+
+    txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, UI_FONT_SIZE*UILine++, "ESC: Quit Game");
+    perFrameWidgets.push_back(txt);
+
+    UILine = 0;
+    std::string selectedBuilding = "Building: ";
+    selectedBuilding += getBuildingTypeStr(game->getCurrentBuildingSelection());
+    txt = new Text(resourceManager->get_font("base_font2"), 0, UI_FONT_SMALL_SIZE*UILine++, selectedBuilding);
+    txt->setColor(al_map_rgb(0,120,255));
+    perFrameWidgets.push_back(txt);
+
+    txt = new Text(resourceManager->get_font("base_font2"), 0, UI_FONT_SMALL_SIZE*UILine++, getRequiredText(BuildingFactory::getCosts(game->getCurrentBuildingSelection())));
+    txt->setColor(al_map_rgb(0,120,255));
+    perFrameWidgets.push_back(txt);
+    txt = new Text(resourceManager->get_font("base_font2"), 0, UI_FONT_SMALL_SIZE*UILine++, BuildingFactory::getProvides(game->getCurrentBuildingSelection()));
+    txt->setColor(al_map_rgb(0,120,255));
+    perFrameWidgets.push_back(txt);
+
+    txt = new Text(resourceManager->get_font("base_font2"), 0, UI_FONT_SMALL_SIZE*UILine++, game->getMessage());
+    txt->setColor(al_map_rgb(0,120,255));
     perFrameWidgets.push_back(txt);
 
     if (game->isReadyToLaunch()) {
         std::vector<ALLEGRO_BITMAP*> frames;
         frames.push_back(resourceManager->get_bitmap("active_launch_button_f1"));
         frames.push_back(resourceManager->get_bitmap("active_launch_button_f2"));
-        auto anim = new SlowBitmapAnimation(LAUNCH_BUTTON_X + UI_START_PX, LAUNCH_BUTTON_Y, frames, 5);
+        auto anim = new SlowBitmapAnimation(LAUNCH_BUTTON_X + UI_START_PX, LAUNCH_BUTTON_Y, frames, 8);
         anim->setFrameNum(frameNum);
         perFrameWidgets.push_back(anim);
     } else {
@@ -172,10 +213,32 @@ void GameScene::createResourceLine(const std::string &name, int value, int maxva
 
 void GameScene::createResourceLine(const std::string &name, int value, int height) {
     auto txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, height, name + std::to_string(value) );
-    txt->setColor(al_map_rgb(0,0,0));
+    if (value < 0)
+        txt->setColor(al_map_rgb(255,0,0));
+    else
+        txt->setColor(al_map_rgb(0,0,0));
     perFrameWidgets.push_back(txt);
 }
 
 void GameScene::onSceneSwitch() {
     audioManager->play_music(resourceManager->get_audio_sample("bg_music"));
+}
+
+std::string GameScene::getRequiredText(std::valarray<int> inCost) {
+    std::string out;
+    std::array<std::string,5> resources = {"Power", "Raw Material", "Steel", "Fuel", "Life Support"};
+    for (size_t i=0;i<5;i++) {
+        if (inCost[i] > 0)
+            out += resources[i] + ": " + std::to_string(inCost[i]) + " ";
+    }
+    if (out.length() > 0){
+        out = "Requires - " + out;
+    }
+    return out;
+}
+
+void GameScene::createShortcutLine(std::pair<std::string, BuildingType> inPair, int xPos) {
+    auto txt = new Text(resourceManager->get_font("base_font"), UI_START_PX, xPos,
+            inPair.first + ": " + getBuildingTypeStr(inPair.second) );
+    perFrameWidgets.push_back(txt);
 }

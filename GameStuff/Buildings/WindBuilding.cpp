@@ -18,8 +18,8 @@ WindBuilding::WindBuilding(int x, int y) : Building(x, y) {
     requiredLocs.emplace_back(Point2d({1,0}));
     locs.emplace_back(Point2d({1,1}));
     requiredLocs.emplace_back(Point2d({1,1}));
-    locs.emplace_back(Point2d({1,2}));
-    requiredLocs.emplace_back(Point2d({1,2}));
+    locs.emplace_back(Point2d({0,2}));
+    requiredLocs.emplace_back(Point2d({0,2}));
 }
 
 void WindBuilding::onDestroy(Resources *resources) {

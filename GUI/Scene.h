@@ -32,6 +32,11 @@ protected:
     AudioStuff* audioManager;
     std::vector<Clickable*> buttons;
     std::vector<BitmapAnimation*> animations;
+
+    Point2d currentMouseLoc = {0,0};
+public:
+    void setCurrentMouseLoc(const Point2d &currentMouseLoc);
+
 public:
     explicit Scene(ResourceManager *resourceManager, AudioStuff *audioManager);
     virtual void init() = 0;

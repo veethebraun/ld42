@@ -5,8 +5,9 @@
 #include "MineBuilding.h"
 
 void MineBuilding::resourceGeneration(Resources *resources) {
-    if (!destroyed)
-        resources->addResources({0,MINE_RATE,0,0,0});
+    if (!destroyed && resources->getPower() > 0) {
+        resources->addResources({0, MINE_RATE, 0, 0, 0});
+    }
 }
 
 std::valarray<int> MineBuilding::getCost() {
@@ -25,5 +26,6 @@ MineBuilding::MineBuilding(int x, int y) : Building(x, y) {
 }
 
 void MineBuilding::onDestroy(Resources *resources) {
+    resources->addResources({MINE_POWER, 0, 0, 0, 0});
 }
 

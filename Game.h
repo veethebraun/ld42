@@ -16,7 +16,7 @@
 #include "GameStuff/BuildingFactory.h"
 #include "defs.h"
 
-#define NUM_TIME_STEPS_FOR_DROP 6
+#define NUM_TIME_STEPS_FOR_DROP 15
 
 typedef std::array<std::array<bool,GRID_COLS>,GRID_ROWS> Grid;
 

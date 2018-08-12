@@ -4,7 +4,7 @@
 
 #include "Text.h"
 
-Text::Text(ALLEGRO_FONT *font, int x, int y, const std::string &text) : font(font), x(x), y(y), text(text), color(al_map_rgb(0, 120, 255)) {}
+Text::Text(ALLEGRO_FONT *font, int x, int y, const std::string &text) : font(font), x(x), y(y), text(text), color(al_map_rgb(0, 0, 0)) {}
 
 void Text::draw() {
     if (text.length() > 0)

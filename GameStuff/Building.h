@@ -12,6 +12,7 @@
 #include "../vectors.h"
 #include "../defs.h"
 #include <map>
+#include "BuildingList.h"
 
 class Building {
 public:
@@ -44,9 +45,10 @@ public:
     bool isOnBoard(int max_x, int max_y);
 
     virtual ~Building() = default;
+    virtual BuildingType getBuildingType() { return BuildingType::NONE; };
+    virtual std::valarray<int> getCost() = 0;
 
 protected:
-    virtual std::valarray<int> getCost() = 0;
 
     std::vector<Point2d> requiredLocs;
 

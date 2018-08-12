@@ -5,7 +5,7 @@
 #include "SteelRefinery.h"
 
 void SteelRefinery::resourceGeneration(Resources *resources) {
-    if (!destroyed) {
+    if (!destroyed && resources->getPower() > 0) {
         int remaining = resources->getSteelStorage() - resources->getSteel();
         int output = std::min(std::min(STEEL_RATE, resources->getRawMaterial()), remaining);
         resources->addResources({0, -output, output, 0, 0});

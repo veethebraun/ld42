@@ -9,7 +9,7 @@
 #include "../vectors.h"
 
 #define TILE_SIZE_PX 135
-#define UI_START_PX 1185
+#define UI_START_PX 1190
 
 #define TILE_ROWS 5
 #define TILE_COLUMNS 7
@@ -37,7 +37,14 @@ private:
     void createResourceLine(const std::string &name, int value, int height);
     void createResourceLine(const std::string &name, int value, int maxval, int height);
 
+    void createShortcutLine(std::pair<std::string, BuildingType> inPair, int xPos);
+    int UILine = 0;
+
     int frameNum = 0;
+
+    std::string getRequiredText(std::valarray<int> inCost);
+
+    std::map<std::string, BuildingType> hotkeyDescriptions;
 
 };
 

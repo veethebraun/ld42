@@ -22,6 +22,9 @@ GameCommand * Game::handleCommand(GameCommand *cmd) {
     auto build = dynamic_cast<SelectBuildingCommand*>(cmd);
     if (build != nullptr) {
         currentBuildingSelection = build->getBuildingType();
+        if (currentBuildingSelection == BuildingType::NONE) {
+            message = "";
+        }
     }
 
     auto time = dynamic_cast<TimeTickCommand*>(cmd);
@@ -53,11 +56,18 @@ void Game::init() {
     buildingsFree = true;
     currentBuildingSelection = BuildingType ::MAT_STORAGE;
     placeBuilding(0,0);
-    buildingsFree = true;
+    currentBuildingSelection = BuildingType ::WIND;
+    placeBuilding(3,0);
+    currentBuildingSelection = BuildingType ::MINE;
+    placeBuilding(2,5);
+    currentBuildingSelection = BuildingType ::STEEL;
+    placeBuilding(4,4);
+    buildingsFree = false;
+
 
     resource->resetResources();
 
-    resource->addResources({0,0,30,0,0});
+    resource->addResources({WIND_POWER_GEN-MINE_POWER-STEEL_REFINERY_POWER,0,0,0,0});
     level = 0;
 }
 
@@ -254,6 +264,8 @@ void Game::addNewRow() {
         for (auto j = (size_t)shrinkRow; j < GRID_COLS-shrinkRow; j++) {
             eligibleForBuild.at((size_t) nextNewRow).at(j) = true;
         }
+
+        resource->addResources({0,0,-STEEL_FOR_NEW_ROW,0,0});
         nextNewRow -= 1;
     }
 

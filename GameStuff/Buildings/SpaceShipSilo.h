@@ -18,8 +18,7 @@ public:
     };
     void onDestroy(Resources *resources) override {};
     ~SpaceShipSilo() override = default;
-
-protected:
+    BuildingType getBuildingType() override { return BuildingType::ROCKET; };
     std::valarray<int> getCost() override;
 };
 

@@ -18,7 +18,7 @@ public:
     };
     void onDestroy(Resources *resources) override;
     ~SteelRefinery() override = default;
-protected:
+    BuildingType getBuildingType() override { return BuildingType::STEEL; };
     std::valarray<int> getCost() override;
 };
 

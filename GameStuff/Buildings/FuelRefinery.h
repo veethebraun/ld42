@@ -20,7 +20,7 @@ public:
     };
 
     ~FuelRefinery() override = default;
-protected:
+    BuildingType getBuildingType() override { return BuildingType::FUEL; };
     std::valarray<int> getCost() override;
 
 };

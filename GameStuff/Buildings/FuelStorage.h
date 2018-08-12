@@ -17,8 +17,9 @@ public:
         return "fuel_store";
     };
     ~FuelStorage() override = default;
-protected:
+    BuildingType getBuildingType() override { return BuildingType::FUEL_STORAGE; };
     std::valarray<int> getCost() override;
+protected:
     std::valarray<int> getStorage() override;
 
 };

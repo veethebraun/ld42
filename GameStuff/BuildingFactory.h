@@ -7,17 +7,8 @@
 
 #include "Building.h"
 #include <string>
+#include "BuildingList.h"
 
-enum class BuildingType {
-    MINE,
-    WIND,
-    STEEL,
-    MAT_STORAGE,
-    FUEL,
-    FUEL_STORAGE,
-    ROCKET,
-    NONE
-};
 
 std::string getBuildingTypeStr(BuildingType buildingType);
 
@@ -25,6 +16,10 @@ class BuildingFactory {
 public:
 
     Building* getNewBuilding(BuildingType buildingType, int x, int y);
+
+    static std::vector<std::string> getFrameNames(BuildingType buildingType);
+    static std::valarray<int> getCosts(BuildingType buildingType);
+    static std::string getProvides(BuildingType buildingType);
 private:
     template<typename T>
     T* getBuilding(int x, int y);

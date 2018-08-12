@@ -84,3 +84,7 @@ void Scene::setAnimations() {
 //        }
 //    }
 }
+
+void Scene::setCurrentMouseLoc(const Point2d &currentMouseLoc) {
+    Scene::currentMouseLoc = currentMouseLoc;
+}

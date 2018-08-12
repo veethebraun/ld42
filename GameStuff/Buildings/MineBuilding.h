@@ -18,11 +18,8 @@ public:
     };
     void onDestroy(Resources *resources) override;
     ~MineBuilding() override = default;
-protected:
+    BuildingType getBuildingType() override { return BuildingType::MINE; };
     std::valarray<int> getCost() override;
-
-private:
-    int drop_counter = 0;
 };
 
 
