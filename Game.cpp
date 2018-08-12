@@ -8,6 +8,7 @@
 #include "GUI/Commands/TimeTickCommand.h"
 #include "GUI/Commands/SelectBuildingCommand.h"
 #include "GUI/Commands/NewRowCommand.h"
+#include "GUI/Commands/LaunchCommand.h"
 
 GameCommand * Game::handleCommand(GameCommand *cmd) {
 
@@ -32,6 +33,13 @@ GameCommand * Game::handleCommand(GameCommand *cmd) {
     if (newRow != nullptr) {
         addNewRow();
     }
+
+    auto launch = dynamic_cast<LaunchCommand*>(cmd);
+    if (launch != nullptr)
+    {
+        if (readyToLaunch)
+            triggerWin();
+    }
     return nullptr;
 }
 
@@ -50,6 +58,7 @@ void Game::init() {
     resource->resetResources();
 
     resource->addResources({0,0,30,0,0});
+    level = 0;
 }
 
 SceneList Game::getCurrentScene() const {
@@ -67,6 +76,9 @@ void Game::placeBuilding(int x, int y) {
             if (doesBuildingFit(building)) {
                 populateBuilding(building);
                 building->onBuild(resource);
+                if (currentBuildingSelection == BuildingType::ROCKET) {
+                    readyToLaunch = true;
+                }
                 currentBuildingSelection = BuildingType::NONE;
                 setMessage("");
             } else {
@@ -188,6 +200,8 @@ void Game::dropBuildings() {
 
     eligibleForBuild = newEligibility;
     nextNewRow += 1;
+    level++;
+    std::cout << "Rows: " << nextNewRow << " level: " << level << " minus: " << level - nextNewRow << std::endl;
 }
 
 void Game::populateBuilding(Building *building) {
@@ -222,7 +236,7 @@ bool Game::buildableAt(size_t i, size_t j) {
 }
 
 void Game::addNewRow() {
-    if (nextNewRow < 0 || nextNewRow >= GRID_ROWS)
+    if (nextNewRow < 0 || nextNewRow >= GRID_ROWS || shrinkRow*2 >= GRID_COLS)
         return;
     bool good = false;
     for (const auto &item : eligibleForBuild.at((size_t)nextNewRow)) {
@@ -237,11 +251,14 @@ void Game::addNewRow() {
 
     if (resource->getSteel() > STEEL_FOR_NEW_ROW || buildingsFree) {
 
-        for (size_t j = 0; j < GRID_COLS; j++) {
+        for (auto j = (size_t)shrinkRow; j < GRID_COLS-shrinkRow; j++) {
             eligibleForBuild.at((size_t) nextNewRow).at(j) = true;
         }
         nextNewRow -= 1;
     }
+
+    shrinkRow = (level-nextNewRow)/SHRINK_COL_EVERY_N_ROWS;
+    std::cout << "Rows: " << nextNewRow << " level: " << level << " minus: " << level - nextNewRow << " shrinkRow: " << shrinkRow <<std::endl;
 
 }
 
@@ -260,4 +277,17 @@ void Game::printEligibleBuildings() {
         }
         std::cout << std::endl;
     }
+}
+
+int Game::getLevel() const {
+    return level;
+}
+
+bool Game::isReadyToLaunch() const {
+    return readyToLaunch;
+}
+
+void Game::triggerWin() {
+    std::cout << "WINNER!" << std::endl;
+
 }

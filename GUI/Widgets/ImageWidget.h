@@ -15,10 +15,13 @@ public:
     ImageWidget(int x, int y, ALLEGRO_BITMAP* bitmap);
 
     void draw() override;
-private:
+
+protected:
+    ALLEGRO_BITMAP* bitmap;
     int x;
     int y;
-    ALLEGRO_BITMAP* bitmap;
+    void setBitmap(ALLEGRO_BITMAP *bitmap);
+
 };
 
 

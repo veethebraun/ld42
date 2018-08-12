@@ -11,19 +11,49 @@ base_tile:
   file: imgs/base_tile.png
 
 fuel_ref:
-  file: imgs/red.png
+  file: imgs/fuel_refine.png
 
 fuel_store:
-  file: imgs/teal.png
+  file: imgs/fuel_storage.png
 
 mat_store:
-  file: imgs/yellow.png
+  file: imgs/storage.png
 
 mine:
-  file: imgs/orange.png
+  file: imgs/mine.png
+
+rocket_silo:
+  file: imgs/rocket_silo.png
 
 steel_ref:
-  file: imgs/base_tile.png
+  file: imgs/steel_refine.png
 
-wind_power:
-  file: imgs/purple.png
+wind_power_f1:
+  file: imgs/wind_power_f1.png
+
+wind_power_f2:
+  file: imgs/wind_power_f2.png
+
+wind_power_f3:
+  file: imgs/wind_power_f3.png
+
+wind_power_f4:
+  file: imgs/wind_power_f4.png
+
+wind_power_f5:
+  file: imgs/wind_power_f5.png
+
+ground:
+  file: imgs/ground.png
+
+tentacles:
+  file: imgs/tentacles.png
+
+dis_launch_button:
+  file: imgs/disabled_launch_button.png
+
+active_launch_button_f1:
+  file: imgs/active_launch_button_f1.png
+
+active_launch_button_f2:
+  file: imgs/active_launch_button_f2.png

@@ -9,6 +9,7 @@
 #include "Buildings/MaterialStorage.h"
 #include "Buildings/FuelRefinery.h"
 #include "Buildings/FuelStorage.h"
+#include "Buildings/SpaceShipSilo.h"
 
 Building *BuildingFactory::getNewBuilding(BuildingType buildingType, int x, int y) {
     switch (buildingType) {
@@ -24,6 +25,8 @@ Building *BuildingFactory::getNewBuilding(BuildingType buildingType, int x, int 
             return getBuilding<FuelRefinery>(x,y);
         case BuildingType ::FUEL_STORAGE:
             return getBuilding<FuelStorage>(x, y);
+        case BuildingType ::ROCKET:
+            return getBuilding<SpaceShipSilo>(x, y);
         case BuildingType::NONE: return nullptr;
     }
 }
@@ -52,6 +55,8 @@ std::string getBuildingTypeStr(BuildingType buildingType) {
 
         case BuildingType::FUEL_STORAGE:
             return "Fuel Storage";
+        case BuildingType ::ROCKET:
+            return "Rocket Silo";
 
         case BuildingType::NONE:
             return "NONE";

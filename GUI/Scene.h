@@ -14,6 +14,7 @@
 #include "Widgets/Animation.h"
 #include "Resources/ResourceManager.h"
 #include "AudioStuff.h"
+#include "Widgets/BitmapAnimation.h"
 #include <vector>
 #include <map>
 #include <queue>
@@ -30,7 +31,7 @@ protected:
     ResourceManager* resourceManager;
     AudioStuff* audioManager;
     std::vector<Clickable*> buttons;
-    std::vector<Animation*> animations;
+    std::vector<BitmapAnimation*> animations;
 public:
     explicit Scene(ResourceManager *resourceManager, AudioStuff *audioManager);
     virtual void init() = 0;

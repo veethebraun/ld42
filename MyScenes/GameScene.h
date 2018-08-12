@@ -37,6 +37,8 @@ private:
     void createResourceLine(const std::string &name, int value, int height);
     void createResourceLine(const std::string &name, int value, int maxval, int height);
 
+    int frameNum = 0;
+
 };
 
 

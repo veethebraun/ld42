@@ -76,11 +76,11 @@ void Scene::incrementFrame() {
 }
 
 void Scene::setAnimations() {
-    for (auto &&drawable : drawables) {
-        auto animation = dynamic_cast<Animation*>(drawable);
-        if (animation != nullptr)
-        {
-            animations.push_back(animation);
-        }
-    }
+//    for (auto &&drawable : drawables) {
+//        auto animation = dynamic_cast<Animation*>(drawable);
+//        if (animation != nullptr)
+//        {
+//            animations.push_back(animation);
+//        }
+//    }
 }

@@ -81,7 +81,21 @@ private:
 
     void addNewRow();
 
+    int level = 0;
+public:
+    int getLevel() const;
+
+private:
+
     int nextNewRow = -1;
+
+    int shrinkRow = 0;
+
+    bool readyToLaunch = false;
+
+    void triggerWin();
+public:
+    bool isReadyToLaunch() const;
 };
 
 

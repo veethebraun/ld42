@@ -51,6 +51,10 @@ protected:
     std::vector<Point2d> requiredLocs;
 
     bool destroyed = false;
+public:
+    bool isDestroyed() const;
+
+protected:
     std::vector<Point2d> locs;
 public:
     const std::vector<Point2d> &getLocs() const;

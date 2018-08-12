@@ -15,6 +15,7 @@ enum class BuildingType {
     MAT_STORAGE,
     FUEL,
     FUEL_STORAGE,
+    ROCKET,
     NONE
 };
 

@@ -11,3 +11,7 @@ ImageWidget::ImageWidget(int x, int y, ALLEGRO_BITMAP* bitmap) : x(x), y(y), bit
 void ImageWidget::draw() {
     al_draw_bitmap(bitmap, (float) x, (float) y, 0);
 }
+
+void ImageWidget::setBitmap(ALLEGRO_BITMAP *bitmap) {
+    ImageWidget::bitmap = bitmap;
+}

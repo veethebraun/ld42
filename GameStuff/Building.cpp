@@ -57,3 +57,7 @@ bool Building::isOnBoard(int max_x, int max_y) {
 const std::vector<Point2d> &Building::getLocs() const {
     return locs;
 }
+
+bool Building::isDestroyed() const {
+    return destroyed;
+}
